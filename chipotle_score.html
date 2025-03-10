@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chipotle Rating Calculator</title>
+    <style>
+        /* Modern reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f7fa; /* Muted light gray background */
+            color: #4a5568; /* Muted dark gray for text */
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #2d3748; /* Dark muted blue-gray */
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 600;
+        }
+
+        .calculator-container {
+            background-color: #ffffff; /* White background for card */
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08); /* Subtle shadow */
+            max-width: 500px;
+            width: 100%;
+            border: none;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .calculator-container:hover {
+            transform: translateY(-5px); /* Slight lift on hover */
+        }
+
+        h2 {
+            color: #718096; /* Muted blue-gray */
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .description {
+            font-style: italic;
+            color: #a0aec0; /* Muted light gray */
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        label {
+            color: #4a5568; /* Muted dark gray */
+            font-weight: 500;
+            width: 120px;
+            font-size: 1rem;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid #e2e8f0; /* Muted light gray border */
+            border-radius: 8px;
+            background-color: #f7fafc; /* Very light muted gray background */
+            color: #2d3748; /* Dark muted blue-gray */
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #fa715f; /* Muted green for focus */
+            box-shadow: 0 0 0 3px rgba(211, 111, 104, 0.2); /* Muted green glow */
+        }
+
+        input[type="number"]::placeholder {
+            color: #a0aec0; /* Muted light gray for placeholder */
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #ffffff;
+            background-color: #fa715f; /* Muted green */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out;
+            margin-top: 1.5rem;
+        }
+
+        button:hover {
+            background-color: #ec5656; /* Darker muted green */
+        }
+
+        button:active {
+            transform: scale(0.98); /* Slight press effect */
+        }
+
+        #result {
+            margin-top: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748; /* Dark muted blue-gray */
+            text-align: center;
+            padding: 0.5rem;
+            border-radius: 8px;
+            background-color: #ffcfcf; /* Very light muted green for result background */
+        }
+
+        /* Responsive design */
+        @media (max-width: 480px) {
+            .calculator-container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.25rem;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            label {
+                width: 100%;
+                margin-bottom: 0.5rem;
+            }
+
+            input[type="number"] {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+   <div>
+    <h1><strong>Chipotle Rating Calculator</strong></h1>
+
+    <div class="calculator-container">
+        <h2>Rate Your Experience</h2>
+        <p class="description">Rate each category on a scale of 1-10 (decimals allowed). The final score will be weighted as follows: Food Quality (60%), Value (25%), Vibes (15%).</p>
+        
+        <div class="input-group">
+            <label for="food-quality">Food Quality:</label>
+            <input type="number" id="food-quality" min="1" max="10" step="0.1" placeholder="1-10">
+        </div>
+        
+        <div class="input-group">
+            <label for="vibes">Vibes:</label>
+            <input type="number" id="vibes" min="1" max="10" step="0.1" placeholder="1-10">
+        </div>
+        
+        <div class="input-group">
+            <label for="value">Value:</label>
+            <input type="number" id="value" min="1" max="10" step="0.1" placeholder="1-10">
+        </div>
+        
+        <button onclick="calculateScore()">Calculate Score</button>
+        
+        <div id="result"></div>
+        
+        
+    </div>
+    <h1>By:  </h1>
+    <h1><i>Ben Roberts</i></h1>
+
+    <script>
+        function calculateScore() {
+            // Get input values
+            const foodQuality = parseFloat(document.getElementById('food-quality').value);
+            const vibes = parseFloat(document.getElementById('vibes').value);
+            const value = parseFloat(document.getElementById('value').value);
+            
+            // Get result element
+            const resultElement = document.getElementById('result');
+            
+            // Validate inputs
+            if (isNaN(foodQuality) || isNaN(vibes) || isNaN(value)) {
+                resultElement.textContent = 'Please enter valid numbers for all categories.';
+                return;
+            }
+            
+            if (foodQuality < 1 || foodQuality > 10 ||
+                vibes < 1 || vibes > 10 ||
+                value < 1 || value > 10) {
+                resultElement.textContent = 'All scores must be between 1 and 10.';
+                return;
+            }
+            
+            // Calculate weighted score
+            const weightedFoodQuality = foodQuality * 0.60;
+            const weightedVibes = vibes * 0.15;
+            const weightedValue = value * 0.25;
+            
+            const finalScore = weightedFoodQuality + weightedVibes + weightedValue;
+            
+            // Display result (rounded to 2 decimal places)
+            resultElement.textContent = `Final Score: ${finalScore.toFixed(2)}/10`;
+        }
+    </script>
+</body>
+</html>
